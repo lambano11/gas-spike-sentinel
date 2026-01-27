@@ -1,0 +1,17 @@
+ethereum_rpc = "https://rpc.hoodi.ethpandaops.io/"
+drosera_rpc = "https://relay.hoodi.drosera.io"
+eth_chain_id = 560048
+drosera_address = "0x91cB447BaFc6e0EA0F4Fe056F5a9b1F14bb06e5D"
+
+[traps.gas_spike_sentinel]
+path = "out/GasSpikeTrap.sol/GasSpikeTrap.json"
+response_contract = "0x953C66a3bb7A6A342A9F494C95156Fa495B5E585"
+response_function = "executeResponse(bytes)"
+cooldown_period_blocks = 50
+min_number_of_operators = 1
+max_number_of_operators = 3
+block_sample_size = 1
+private = true
+whitelist = ["0x9536C6A50521cb14380f7221EEf1E8a4C381643D"]
+private_trap = true
+address = "0x3AE274c3E9a2b4C90Cd0689071Cbd1CE0621fE60"
