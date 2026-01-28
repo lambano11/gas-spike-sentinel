@@ -22,5 +22,6 @@ contract DeployGasSpikeScript is Script {
         console.log("MockGasOracle deployed at:", address(oracle));
         console.log("GasSpikeResponseSecure deployed at:", address(response));
         console.log("Response owner:", response.owner());
+        console.log("Initial gas price:", oracle.currentGasPriceGwei(), "gwei");  // FIXED: currentGasPriceGwei
     }
 }
