@@ -1,66 +1,44 @@
-## Foundry
+# Gas Spike Sentinel - Fully Corrected
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+## Admin Corrections Implemented ✅
 
-Foundry consists of:
+### **Critical Fixes Applied:**
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+1. **✅ Threshold Units Clarification**  
+   `SPIKE_THRESHOLD_GWEI = 100` - Explicit unit naming prevents wei/gwei confusion
 
-## Documentation
+2. **✅ Responder Access Control Fixed**  
+   `onlyAuthorized` modifier allows both owner AND Drosera executor addresses
 
-https://book.getfoundry.sh/
+3. **✅ Oracle Address Verification**  
+   Clear placeholder with instructions to update after deployment
 
-## Usage
+4. **✅ Proper Hardening**  
+   `if (!success || data.length != 32) return bytes("")` - Returns empty on failure
 
-### Build
+5. **✅ Strict Data Validation**  
+   `data[0].length != 32` check prevents decode reverts
 
-```shell
-$ forge build
-```
+## Architecture
+- **Target:** MockGasOracle (simulates gas price oracle)
+- **Metric:** Gas price in GWEI via `getGasPrice()`
+- **Trigger:** `Gas Price > 100 GWEI`
+- **Response:** GasSpikeResponseSecure with proper access control
+- **Network:** Drosera Hoodi Testnet
 
-### Test
+## Gas Efficiency
+- collect(): ~25,000 gas (estimate)
+- shouldRespond(): ~23,000 gas (estimate)
+- **Total:** ~48,000 gas (well under limits)
 
-```shell
-$ forge test
-```
+## Deployment Steps
+1. Deploy MockGasOracle and GasSpikeResponseSecure
+2. Update trap with correct oracle address
+3. Set authorizedCaller to Drosera executor address
+4. Compile and deploy trap to Drosera network
 
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+## Files
+- `src/GasSpikeTrapHardened.sol` - Main trap with all corrections
+- `src/GasSpikeResponseSecure.sol` - Secure response contract
+- `src/MockGasOracle.sol` - Simulation target
+- `drosera.toml` - Drosera configuration
