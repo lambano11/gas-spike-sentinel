@@ -1,44 +1,27 @@
-# Gas Spike Sentinel - Fully Corrected
+# Gas Spike Sentinel - ALL ADMIN CORRECTIONS IMPLEMENTED
 
-## Admin Corrections Implemented ✅
+## ✅ Corrections Implemented:
 
-### **Critical Fixes Applied:**
+### **1. Response Access Control FIXED**
+- Removed `onlyOwner` modifier from `executeResponse()`
+- Function is now callable by Drosera network
+- No revert on Drosera callbacks
 
-1. **✅ Threshold Units Clarification**  
-   `SPIKE_THRESHOLD_GWEI = 100` - Explicit unit naming prevents wei/gwei confusion
+### **2. Hardcoded Oracle Address FIXED**  
+- Updated from `0x000...000` placeholder
+- Now uses actual deployed address: `0x515C71C1C79DCb882F53f7605b21E7D2610a4464`
+- `collect()` will succeed and return real gas price data
 
-2. **✅ Responder Access Control Fixed**  
-   `onlyAuthorized` modifier allows both owner AND Drosera executor addresses
-
-3. **✅ Oracle Address Verification**  
-   Clear placeholder with instructions to update after deployment
-
-4. **✅ Proper Hardening**  
-   `if (!success || data.length != 32) return bytes("")` - Returns empty on failure
-
-5. **✅ Strict Data Validation**  
-   `data[0].length != 32` check prevents decode reverts
+### **3. Debug Sentinel Value ADDED**
+- Returns `type(uint256).max` on call failure (instead of empty bytes)
+- `shouldRespond()` ignores sentinel value (no false triggers)
+- Provides visibility into trap execution failures
 
 ## Architecture
-- **Target:** MockGasOracle (simulates gas price oracle)
-- **Metric:** Gas price in GWEI via `getGasPrice()`
-- **Trigger:** `Gas Price > 100 GWEI`
-- **Response:** GasSpikeResponseSecure with proper access control
-- **Network:** Drosera Hoodi Testnet
+- **MockGasOracle.sol**: Simulates gas price oracle (30 gwei normal, spike to 200 gwei)
+- **GasSpikeTrap.sol**: Monitors gas price, triggers above 100 gwei threshold
+- **GasSpikeResponse.sol**: No-access-control response for Drosera
 
-## Gas Efficiency
-- collect(): ~25,000 gas (estimate)
-- shouldRespond(): ~23,000 gas (estimate)
-- **Total:** ~48,000 gas (well under limits)
-
-## Deployment Steps
-1. Deploy MockGasOracle and GasSpikeResponseSecure
-2. Update trap with correct oracle address
-3. Set authorizedCaller to Drosera executor address
-4. Compile and deploy trap to Drosera network
-
-## Files
-- `src/GasSpikeTrapHardened.sol` - Main trap with all corrections
-- `src/GasSpikeResponseSecure.sol` - Secure response contract
-- `src/MockGasOracle.sol` - Simulation target
-- `drosera.toml` - Drosera configuration
+## Test Commands
+1. Check gas price: `cast call 0x515C71C1C79DCb882F53f7605b21E7D2610a4464 "getGasPrice()"`
+2. Simulate spike: `cast send 0x515C71C1C79DCb882F53f7605b21E7D2610a4464 "simulateGasSpike(uint256)" 200`

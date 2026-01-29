@@ -5,7 +5,7 @@ import {Script} from "forge-std/Script.sol";
 import {console} from "forge-std/console.sol";
 import {GasSpikeResponse} from "../src/GasSpikeResponse.sol";
 
-contract DeployGasSpikeResponseScript is Script {
+contract DeployResponseScript is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
@@ -15,6 +15,5 @@ contract DeployGasSpikeResponseScript is Script {
         vm.stopBroadcast();
         
         console.log("GasSpikeResponse deployed at:", address(response));
-        console.log("Owner:", response.owner());
     }
 }
